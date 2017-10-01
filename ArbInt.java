@@ -1,45 +1,84 @@
 import java.util.*;
+import java.lang.Math;
 
 public class ArbInt {
 
-    public int[] value = new int[2];
+    public int remain;
+    public ArrayList<Integer>  maxIntCount = new ArrayList<Integer>();
     public boolean negative;
     private final String maxInt = "2147483647";
 
     public ArbInt (String num) {
-        int size = 0;
+        maxIntCount.add(0);
         negative = num.charAt(0) == '-' ? true : false;
         num = negative ? num.substring(1) : num ;
         while (num != "") {
             try {
                 int rem = new Integer(num);
-                value[0] = size;
-                value[1] = rem;
+                remain = rem;
                 num = "";
             } catch (NumberFormatException e) {
                 //System.out.println(num);
-                size++;
-                num = getRem(num);
+                int maxCountMulti = num.length() - 11;
+                maxCountMulti = maxCountMulti >= 0 ? maxCountMulti : 0;
+                maxCountMulti = maxCountMulti <= 9 ? maxCountMulti : 9;
+                maxIntCount = addToMaxIntCount(maxIntCount,
+                                               new Double(Math.pow(10,maxCountMulti)).intValue());
+                System.out.println("Size: " + maxIntCount.size());
+                num = getRem(num, maxCountMulti);
+                System.out.println("Num: " + num);
             }
         }
     }
 
-    public ArbInt (int maxIntCount, int rem) {
-        value[0] = maxIntCount;
-        value[1] = rem;
+    /* public ArbInt (int rem) {
+        this.maxIntCount = null;
+        this.remain = rem;
     }
 
-    private String getRem (String num) {
+    public ArbInt (ArbInt  maxIntCount, int rem) {
+        this.maxIntCount = maxIntCount;
+        this.remain = rem;
+        }*/
+
+    private ArrayList<Integer> addToMaxIntCount
+        (ArrayList<Integer> maxIntCount, int num) {
+        int last = maxIntCount.size()-1;
+        int newInt = maxIntCount.get(last);
+        System.out.println("newInt1: " + newInt);
+        newInt += num;
+        System.out.println("newInt2: " + newInt);
+        if (newInt > 0) {
+            maxIntCount.set(last, newInt);
+            return maxIntCount;
+        }  else {
+            System.out.println("a");
+            int left = 2147483647 - maxIntCount.get(last);
+            System.out.println("left: " + left);
+            maxIntCount.set(last, 2147483647);
+            maxIntCount.add(num-left);
+            return maxIntCount;
+        }
+    }
+                    
+
+    private String getRem (String num, int maxCountMulti) {
+        String newMaxInt = maxInt;
+        for(int i = 0; i < maxCountMulti; i++) {
+            newMaxInt += "0";
+        }
+        //System.out.println(num);
+        //System.out.println(newMaxInt);
         String newNum = "";
         boolean carry = false;
-        for(int p = 0; p < maxInt.length(); p++) {
+        for(int p = 0; p < newMaxInt.length(); p++) {
             int numDigit = new Integer(num.substring(num.length() - (p+1),
                                                      num.length() - p));
             int intDigit = !carry ? new Integer(
-                             maxInt.substring(maxInt.length() - (p+1),
-                                              maxInt.length() - p )) :
-                new Integer(maxInt.substring(maxInt.length() - (p+1),
-                                             maxInt.length() - p)) + 1;
+                             newMaxInt.substring(newMaxInt.length() - (p+1),
+                                              newMaxInt.length() - p )) :
+                new Integer(newMaxInt.substring(newMaxInt.length() - (p+1),
+                                             newMaxInt.length() - p)) + 1;
             int result = numDigit - intDigit;
             String digit = result < 0 ? String.valueOf(10 + result) :
                 String.valueOf(result);
@@ -48,7 +87,7 @@ public class ArbInt {
             carry = result < 0 ? true : false;
             newNum = digit + newNum;
         }
-        int i = (num.length() - maxInt.length());
+        int i = (num.length() - newMaxInt.length());
         while(carry && i > 0) {
             int digit = new Integer(num.substring(i-1, i));
             //System.out.println(digit);
@@ -62,12 +101,15 @@ public class ArbInt {
             }
         }
         newNum = num.substring(0, i) + newNum;
-        //System.out.println(newNum);
+        if(newNum.charAt(0) == '0') {
+            newNum = newNum.replaceFirst("[0]+","");
+        }
+        System.out.println("Newnum : " + newNum);
         return newNum;
     }
 
-    public ArbInt add(ArbInt secondVal) {
-        ArbInt result = new ArbInt(this.value[0], this.value[1]);
+    /*public ArbInt add(ArbInt secondVal) {
+        ArbInt result = new ArbInt(this.maxIntCount, this.remain);
         result.value[0] += secondVal.value[0];
         try{
             int rem = result.value[1] + secondVal.value[1];
@@ -88,7 +130,7 @@ public class ArbInt {
         //TODO : Get this working once support for negative ArbInt's
         // is done.
         return result;
-    }
+        }*/
 
     private String combineString(String first, String second) {
         String result = "";
@@ -128,7 +170,7 @@ public class ArbInt {
         return result;
     }
     
-    public String toString() {
+    /*public String toString() {
         ArrayList<String> multiValues = new ArrayList<>();
         String maxIntCount = String.valueOf(value[0]);
         for(int i = 0; i < maxIntCount.length(); i++) {
@@ -155,5 +197,5 @@ public class ArbInt {
             result = "-" + result;
         }
         return result;
-    }
+        }*/
 }
