@@ -127,12 +127,71 @@ public class ArbInt {
         return newInt;
     }
 
-    /*public ArbInt subtract(ArbInt secondVal) {
-        ArbInt result = new ArbInt(this.value[0], this.value[1]);
-        //TODO : Get this working once support for negative ArbInt's
-        // is done.
-        return result;
-    }*/
+    public ArbInt subtract(ArbInt other) {
+        ArbInt newInt = new ArbInt();
+        int newLastCell = 0;
+        int thisMaxIntCount = !maxIntCount.isEmpty() ? maxIntCount.size() - 1 :
+                0;
+        int otherMaxIntCount = !other.maxIntCount.isEmpty() ? 
+                other.maxIntCount.size() - 1 : 0;
+        int newMaxIntCount = thisMaxIntCount - otherMaxIntCount;
+        newInt.negative = newMaxIntCount < 0;
+        for(int i = Math.abs(newMaxIntCount); i > 0; i--) {
+            newInt.maxIntCount.add(2147483647);
+        }
+        if(!maxIntCount.isEmpty() && !other.maxIntCount.isEmpty()) {
+            newLastCell = maxIntCount.get(maxIntCount.size()-1) -
+                    other.maxIntCount.get(other.maxIntCount.size()-1);
+            if(newLastCell < 0) {
+                if(!newInt.maxIntCount.isEmpty()) {
+                    if(newInt.negative) {
+                        newInt.maxIntCount.add(Math.abs(newLastCell));
+                    } else {
+                        newInt.maxIntCount.set(
+                        newInt.maxIntCount.size()-1, 2147483647 + newLastCell);
+                    }
+                } else {
+                    newInt.maxIntCount.add(Math.abs(newLastCell));
+                    newInt.negative = true;
+                }
+            } else {
+                if(!newInt.maxIntCount.isEmpty()) {
+                    if(newInt.negative) {
+                        newInt.maxIntCount.set(
+                        newInt.maxIntCount.size()-1, 2147483647 - newLastCell);
+                    } else {
+                        newInt.maxIntCount.add(newLastCell);
+                    }
+                } else {
+                    newInt.maxIntCount.add(newLastCell);
+                }
+            }
+        }
+        int rem = remain - other.remain;
+        if(rem < 0) {
+            if(!newInt.maxIntCount.isEmpty()) {
+                newInt.remain = Math.abs(rem);
+                newInt.negative = true;
+            } else {
+                if(newInt.negative) {
+                    newInt.remain = Math.abs(rem);
+                } else {
+                    newInt.remain = 2147483647 + rem;
+                    int oldVal = newInt.maxIntCount.get(newInt.maxIntCount.size()-1);
+                    newInt.maxIntCount.set(newInt.maxIntCount.size()-1, oldVal - 1);
+                }    
+            }
+        } else {
+            if(newInt.negative) {
+                newInt.remain = 2147483647 - rem;
+                int oldVal = newInt.maxIntCount.get(newInt.maxIntCount.size()-1);
+                newInt.maxIntCount.set(newInt.maxIntCount.size()-1, oldVal - 1);
+            } else {
+                newInt.remain = rem;
+            }
+        }
+        return newInt;
+    }
 
     private String combineString(String first, String second) {
         String result = "";
@@ -204,6 +263,7 @@ public class ArbInt {
     public String toString() {
         ArrayList<String> multiValues = new ArrayList<>();
         String maxIntCountSize = String.valueOf(maxIntCount.size()-1);
+        maxIntCountSize = maxIntCountSize.charAt(0) == '-' ? "0" : maxIntCountSize;
         String cellValue = "4611686014132420609";
         String result = "0";
         if(!maxIntCountSize.equals("0")) {
@@ -230,27 +290,32 @@ public class ArbInt {
             }
         }
         multiValues = new ArrayList<>();
-        String lastMaxIntCount = String.valueOf
-            (maxIntCount.get(maxIntCount.size()-1));
-        for(int i = 0; i < lastMaxIntCount.length(); i++) {
-            int firstDigit = new Integer
-                (lastMaxIntCount.substring(lastMaxIntCount.length()-(i+1),
-                                           lastMaxIntCount.length() - i));
-            for(int j = 0; j < maxInt.length(); j++) {
-                int secondDigit = new Integer
-                    (maxInt.substring(maxInt.length()-(j+1),
-                                      maxInt.length() - j));
-                String multiVal = String.valueOf(firstDigit*secondDigit);
-                for(int k = 0; k < i+j; k++) {
-                    multiVal += "0";
+        if (!maxIntCount.isEmpty()) {
+            String lastMaxIntCount = String.valueOf
+                (maxIntCount.get(maxIntCount.size()-1));
+            for(int i = 0; i < lastMaxIntCount.length(); i++) {
+                int firstDigit = new Integer
+                    (lastMaxIntCount.substring(lastMaxIntCount.length()-(i+1),
+                                               lastMaxIntCount.length() - i));
+                for(int j = 0; j < maxInt.length(); j++) {
+                    int secondDigit = new Integer
+                        (maxInt.substring(maxInt.length()-(j+1),
+                                          maxInt.length() - j));
+                    String multiVal = String.valueOf(firstDigit*secondDigit);
+                    for(int k = 0; k < i+j; k++) {
+                        multiVal += "0";
+                    }
+                    multiValues.add(multiVal);
                 }
-                multiValues.add(multiVal);
+            }
+            for(int i = 0; i < multiValues.size(); i++) {
+                result = combineString(result, multiValues.get(i));
             }
         }
-        for(int i = 0; i < multiValues.size(); i++) {
-            result = combineString(result, multiValues.get(i));
-        }
         result = combineString(result, String.valueOf(remain));
+        if(result.charAt(0) == '0') {
+            result = result.replaceFirst("[0]+","");
+        }
         if(negative) {
             result = "-" + result;
         }
