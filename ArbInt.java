@@ -33,18 +33,21 @@ public class ArbInt {
 
 
     private ArrayList<Integer> addToMaxIntCount
-        (ArrayList<Integer> maxIntCount, int num) {
-        int last = maxIntCount.size()-1;
-        int newInt = maxIntCount.get(last);
+        (ArrayList<Integer> oldMaxIntCount, int num) {
+        if(oldMaxIntCount.isEmpty()) {
+            oldMaxIntCount.add(0);
+        }
+        int last = oldMaxIntCount.size()-1;
+        int newInt = oldMaxIntCount.get(last);
         newInt += num;
         if (newInt > 0) {
-            maxIntCount.set(last, newInt);
-            return maxIntCount;
+            oldMaxIntCount.set(last, newInt);
+            return oldMaxIntCount;
         }  else {
-            int left = 2147483647 - maxIntCount.get(last);
-            maxIntCount.set(last, 2147483647);
-            maxIntCount.add(num-left);
-            return maxIntCount;
+            int left = 2147483647 - oldMaxIntCount.get(last);
+            oldMaxIntCount.set(last, 2147483647);
+            oldMaxIntCount.add(num-left);
+            return oldMaxIntCount;
         }
     }
                     
@@ -297,6 +300,101 @@ public class ArbInt {
             result = endString + result;
         }
         return result;
+    }
+    
+    public ArbInt halve() {
+        ArbInt newInt = new ArbInt();
+        newInt.negative = negative;
+        int maxIntCellCount = maxIntCount.isEmpty() ? 0:maxIntCount.size() - 1;
+        if(maxIntCellCount%2 == 0) {
+            for(int i = 0; i < maxIntCellCount/2; i++) {
+                newInt.maxIntCount.add(2147483647);
+            }
+        } else {
+            for(int i = 0; i < maxIntCellCount/2 - 1; i++) {
+                newInt.maxIntCount.add(2147483647);
+            }
+            newInt.maxIntCount.add(1073741823);
+        }
+        int lastCell  = maxIntCount.isEmpty() ? 0 :
+                maxIntCount.get(maxIntCount.size()-1);
+        if(lastCell != 0) {
+            newInt.maxIntCount = addToMaxIntCount(
+                    newInt.maxIntCount, lastCell/2);
+        }
+        newInt.remain = remain/2;
+        for(int i: newInt.maxIntCount) {
+            System.out.println("mic " + i);
+        }
+        System.out.println("rem " + newInt.remain);
+        return newInt;
+    }
+    
+    public boolean compare (ArbInt other, int type) {
+        switch (type) {
+            case 0:
+            if(maxIntCount.size() != other.maxIntCount.size()) {
+                return false;
+            } else {
+                if(!maxIntCount.isEmpty()) {
+                    if(maxIntCount.get(maxIntCount.size()-1) !=
+                            other.maxIntCount.get(other.maxIntCount.size()-1)) {
+                        return false;
+                    }
+                }
+                if(remain == other.remain) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            
+            case 1:
+            if(maxIntCount.size() < other.maxIntCount.size()) {
+                return true;
+            } else if (maxIntCount.size() > other.maxIntCount.size()) {
+                return false;
+            } else {
+                if(!maxIntCount.isEmpty()) {
+                    if(maxIntCount.get(maxIntCount.size()-1) <
+                            other.maxIntCount.get(other.maxIntCount.size()-1)) {
+                        return true;
+                    } else if(maxIntCount.get(maxIntCount.size()-1) >
+                            other.maxIntCount.get(other.maxIntCount.size()-1)) {
+                        return false;
+                    }
+                }
+                if(remain < other.remain) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            
+            case 2:
+            if(maxIntCount.size() > other.maxIntCount.size()) {
+                return true;
+            } else if (maxIntCount.size() < other.maxIntCount.size()) {
+                return false;
+            } else {
+                if(!maxIntCount.isEmpty()) {
+                    if(maxIntCount.get(maxIntCount.size()-1) >
+                            other.maxIntCount.get(other.maxIntCount.size()-1)) {
+                        return true;
+                    } else if(maxIntCount.get(maxIntCount.size()-1) <
+                            other.maxIntCount.get(other.maxIntCount.size()-1)) {
+                        return false;
+                    }
+                }
+                if(remain > other.remain) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            
+            default: return false;
+        }
     }
     
     @Override
