@@ -91,6 +91,26 @@ public class ArbInt {
 
     public ArbInt add(ArbInt other) {
         ArbInt newInt = new ArbInt();
+        boolean negNum = negative || other.negative;
+        if(negative && other.negative) {
+            other.negative = false;
+            this.negative = false;
+            newInt = this.add(other);
+            newInt.negative = true;
+            other.negative = true;
+            this.negative = true;
+        } else if(other.negative) {
+            other.negative = false;
+            newInt =  this.subtract(other);
+            other.negative = true;
+        } else if(negative) {
+            negative = false;
+            newInt = other.subtract(this);
+            negative = true;
+        }
+        if(negNum) {
+            return newInt;
+        }
         int thisMaxIntCount = 
                 !maxIntCount.isEmpty() ? maxIntCount.size() - 1 : 0;
         int otherMaxIntCount = 
@@ -129,6 +149,26 @@ public class ArbInt {
 
     public ArbInt subtract(ArbInt other) {
         ArbInt newInt = new ArbInt();
+        boolean negNum = negative || other.negative;
+        if(negative && other.negative) {
+            this.negative = false;
+            other.negative = false;
+            newInt = other.subtract(this);
+            this.negative = true;
+            other.negative = true;
+        } else if (negative) {
+            this.negative = false;
+            newInt = this.add(other);
+            newInt.negative = true;
+            this.negative = true;
+        } else if (other.negative) {
+            other.negative = false;
+            newInt = this.add(other);
+            other.negative = true;
+        }
+        if(negNum) {
+            return newInt;
+        }
         int newLastCell = 0;
         int thisMaxIntCount = !maxIntCount.isEmpty() ? maxIntCount.size() - 1 :
                 0;

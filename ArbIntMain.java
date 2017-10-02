@@ -8,7 +8,7 @@ public class ArbIntMain {
         ArbInt ai3 = new ArbInt("1234567890123");
         ArbInt ai4 = ai.add(ai2);
         ArbInt ai5 = ai.subtract(ai3);
-        ArbInt ai6 = new ArbInt("12345678");
+        ArbInt ai6 = new ArbInt("-12345678");
         ArbInt ai7 = new ArbInt("12345679");
         
         System.out.println(ai);
