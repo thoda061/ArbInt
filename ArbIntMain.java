@@ -1,4 +1,4 @@
-import java.util.*;
+import java.math.BigInteger;
 
 public class ArbIntMain {
 
@@ -23,5 +23,16 @@ public class ArbIntMain {
             System.out.println("maxIntCount " + i);
         }
         System.out.println("Rem " + ai2.remain);
+        System.out.println(ai);
+        BigInteger big = new BigInteger("2147483647");
+        BigInteger cellCount = new BigInteger("2677");
+        BigInteger lastCell = new BigInteger("91009494");
+        BigInteger rem = new BigInteger("1991175212");
+        lastCell = lastCell.multiply(big);
+        big = big.multiply(big);
+        big = big.multiply(cellCount);
+        big = big.add(lastCell);
+        big = big.add(rem);
+        System.out.println(big);
     }
 }

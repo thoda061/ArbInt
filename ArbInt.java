@@ -18,15 +18,12 @@ public class ArbInt {
                 remain = rem;
                 num = "";
             } catch (NumberFormatException e) {
-                //System.out.println(num);
                 int maxCountMulti = num.length() - 11;
                 maxCountMulti = maxCountMulti >= 0 ? maxCountMulti : 0;
                 maxCountMulti = maxCountMulti <= 9 ? maxCountMulti : 9;
                 maxIntCount = addToMaxIntCount(maxIntCount,
                                                new Double(Math.pow(10,maxCountMulti)).intValue());
-                System.out.println("Size: " + maxIntCount.size());
                 num = getRem(num, maxCountMulti);
-                System.out.println("Num: " + num);
             }
         }
     }
@@ -45,16 +42,12 @@ public class ArbInt {
         (ArrayList<Integer> maxIntCount, int num) {
         int last = maxIntCount.size()-1;
         int newInt = maxIntCount.get(last);
-        System.out.println("newInt1: " + newInt);
         newInt += num;
-        System.out.println("newInt2: " + newInt);
         if (newInt > 0) {
             maxIntCount.set(last, newInt);
             return maxIntCount;
         }  else {
-            System.out.println("a");
             int left = 2147483647 - maxIntCount.get(last);
-            System.out.println("left: " + left);
             maxIntCount.set(last, 2147483647);
             maxIntCount.add(num-left);
             return maxIntCount;
@@ -67,8 +60,6 @@ public class ArbInt {
         for(int i = 0; i < maxCountMulti; i++) {
             newMaxInt += "0";
         }
-        //System.out.println(num);
-        //System.out.println(newMaxInt);
         String newNum = "";
         boolean carry = false;
         for(int p = 0; p < newMaxInt.length(); p++) {
@@ -104,7 +95,6 @@ public class ArbInt {
         if(newNum.charAt(0) == '0') {
             newNum = newNum.replaceFirst("[0]+","");
         }
-        System.out.println("Newnum : " + newNum);
         return newNum;
     }
 
@@ -153,6 +143,9 @@ public class ArbInt {
                 result = String.valueOf(newDigit) + result;
             }
         }
+        if(first.length() == second.length() && carry == 1) {
+            return "1" + result;
+        }
         int end;
         try {
             end = firstSmall ?
@@ -161,22 +154,76 @@ public class ArbInt {
         } catch (NumberFormatException e) {
             end = 0;
         }
-        if (carry == 1) {
+        if (carry == 1 && end != 0) {
             end++;
             result = String.valueOf(end) + result;
         } else if (end != 0){
             result = String.valueOf(end) + result;
         }
+        if(end == 0) {
+            String endString = firstSmall ?
+                second.substring(0, second.length() - first.length()) :
+                first.substring(0, first.length() - second.length());
+            int i = endString.length()-1;
+            while(i >= 0 && carry != 0) {
+                if(endString.charAt(i) != '9') {
+                    char c = endString.charAt(i);
+                    c += 1;
+                    endString = endString.substring(0, i)
+                        + c + endString.substring(i+1);
+                    i = -1;
+                    carry = 0;
+                } else {
+                    endString = endString.substring(0, i)
+                        + "0" + endString.substring(i+1);
+                    i--;
+                }
+                if(i < 0 && carry != 0) {
+                    endString = "1" + endString;
+                    carry = 0;
+                }
+            }
+            result = endString + result;
+        }
         return result;
     }
     
-    /*public String toString() {
+    @Override
+    public String toString() {
         ArrayList<String> multiValues = new ArrayList<>();
-        String maxIntCount = String.valueOf(value[0]);
-        for(int i = 0; i < maxIntCount.length(); i++) {
+        String maxIntCountSize = String.valueOf(maxIntCount.size()-1);
+        String cellValue = "4611686014132420609";
+        String result = "0";
+        if(!maxIntCountSize.equals("0")) {
+            for(int i = 0; i < maxIntCountSize.length(); i++) {
+                int firstDigit = new Integer
+                    (maxIntCountSize.substring(maxIntCountSize.length()-(i+1),
+                                           maxIntCountSize.length() - i));
+                for(int j = 0; j < cellValue.length(); j++) {
+                    int secondDigit = new Integer
+                        (cellValue.substring(cellValue.length()-(j+1),
+                                          cellValue.length() - j));
+                    String multiVal = String.valueOf(firstDigit*secondDigit);
+                    if(!multiVal.equals("0")) {
+                        for(int k = 0; k < i+j; k++) {
+                            multiVal += "0";
+                        }
+                        multiValues.add(multiVal);
+                    }
+                }
+            }
+            result = multiValues.get(0);
+            for(int i = 1; i < multiValues.size(); i++) {
+                result = combineString(result, multiValues.get(i));
+            }
+        }
+        multiValues = new ArrayList<>();
+        String lastMaxIntCount = String.valueOf
+            (maxIntCount.get(maxIntCount.size()-1));
+        for(int i = 0; i < lastMaxIntCount.length(); i++) {
             int firstDigit = new Integer
-                (maxIntCount.substring(maxIntCount.length()-(i+1),
-                                       maxIntCount.length() - i));
+                (lastMaxIntCount.substring(lastMaxIntCount.length()-(i+1),
+                                           lastMaxIntCount.length() - i));
             for(int j = 0; j < maxInt.length(); j++) {
                 int secondDigit = new Integer
                     (maxInt.substring(maxInt.length()-(j+1),
@@ -188,14 +235,13 @@ public class ArbInt {
                 multiValues.add(multiVal);
             }
         }
-        String result = multiValues.get(0);
-        for(int i = 1; i < multiValues.size(); i++) {
+        for(int i = 0; i < multiValues.size(); i++) {
             result = combineString(result, multiValues.get(i));
         }
-        result = combineString(result, String.valueOf(value[1]));
+        result = combineString(result, String.valueOf(remain));
         if(negative) {
             result = "-" + result;
         }
         return result;
-        }*/
+    }
 }
