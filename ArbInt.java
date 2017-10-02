@@ -28,15 +28,9 @@ public class ArbInt {
         }
     }
 
-    /* public ArbInt (int rem) {
-        this.maxIntCount = null;
-        this.remain = rem;
+    public ArbInt () {
     }
 
-    public ArbInt (ArbInt  maxIntCount, int rem) {
-        this.maxIntCount = maxIntCount;
-        this.remain = rem;
-        }*/
 
     private ArrayList<Integer> addToMaxIntCount
         (ArrayList<Integer> maxIntCount, int num) {
@@ -73,15 +67,12 @@ public class ArbInt {
             int result = numDigit - intDigit;
             String digit = result < 0 ? String.valueOf(10 + result) :
                 String.valueOf(result);
-            //System.out.println(numDigit + " " +  intDigit + " " + result
-            //                  + " " + digit);
             carry = result < 0 ? true : false;
             newNum = digit + newNum;
         }
         int i = (num.length() - newMaxInt.length());
         while(carry && i > 0) {
             int digit = new Integer(num.substring(i-1, i));
-            //System.out.println(digit);
             if(digit == 0) {
                 i--;
                 newNum = "9" + newNum;
@@ -98,29 +89,50 @@ public class ArbInt {
         return newNum;
     }
 
-    /*public ArbInt add(ArbInt secondVal) {
-        ArbInt result = new ArbInt(this.maxIntCount, this.remain);
-        result.value[0] += secondVal.value[0];
-        try{
-            int rem = result.value[1] + secondVal.value[1];
-            result.value[1] = rem;
-        } catch (NumberFormatException e) {
-            String firstValue = String.valueOf(result.value[1]);
-            String secondValue = String.valueOf(secondVal.value[1]);
-            String combinedString = combineString(firstValue, secondValue);
-            ArbInt combineRem = new ArbInt(combinedString);
-            result.value[0] += combineRem.value[0];
-            result.value[1] = combineRem.value[1];
+    public ArbInt add(ArbInt other) {
+        ArbInt newInt = new ArbInt();
+        int thisMaxIntCount = 
+                !maxIntCount.isEmpty() ? maxIntCount.size() - 1 : 0;
+        int otherMaxIntCount = 
+            !other.maxIntCount.isEmpty() ? other.maxIntCount.size() - 1 : 0;
+        int totalMaxIntCount = thisMaxIntCount + otherMaxIntCount;
+        for(int i = totalMaxIntCount; i > 0; i--) {
+            newInt.maxIntCount.add(2147483647);
         }
-        return result;
+        if(maxIntCount.size() > 0 && other.maxIntCount.size() > 0) {
+            try {
+                int newLastCell = other.maxIntCount.get(
+                    other.maxIntCount.size()-1) + maxIntCount.get(
+                    maxIntCount.size()-1);
+                newInt.maxIntCount.add(newLastCell);    
+            } catch (NumberFormatException e) {
+                String lastCell = combineString(
+                    String.valueOf(maxIntCount.get(maxIntCount.size()-1)),
+                    String.valueOf(other.maxIntCount.get(other.maxIntCount.size()-1)));
+                lastCell = getRem(lastCell, 0);
+                newInt.maxIntCount.add(2147483647);
+                newInt.maxIntCount.add(new Integer(lastCell));
+            }
+        }
+        int newRem = other.remain + remain;
+        if (newRem > 0) {
+            newInt.remain = newRem;
+        } else {
+            String rem = combineString(String.valueOf(remain),
+                    String.valueOf(other.remain));
+            newInt.remain = new Integer(getRem(rem, 0));
+            newInt.maxIntCount = addToMaxIntCount(newInt.maxIntCount, 1);
+        }
+        newInt.negative = false;
+        return newInt;
     }
 
-    public ArbInt subtract(ArbInt secondVal) {
+    /*public ArbInt subtract(ArbInt secondVal) {
         ArbInt result = new ArbInt(this.value[0], this.value[1]);
         //TODO : Get this working once support for negative ArbInt's
         // is done.
         return result;
-        }*/
+    }*/
 
     private String combineString(String first, String second) {
         String result = "";
