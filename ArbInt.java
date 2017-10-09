@@ -22,9 +22,14 @@ public class ArbInt {
                 maxCountMulti = maxCountMulti >= 0 ? maxCountMulti : 0;
                 maxCountMulti = maxCountMulti <= 9 ? maxCountMulti : 9;
                 maxIntCount = addToMaxIntCount(maxIntCount,
-                                               new Double(Math.pow(10,maxCountMulti)).intValue());
+                                               new Double
+                                               (Math.pow
+                                                (10,maxCountMulti)).intValue());
                 num = getRem(num, maxCountMulti);
             }
+        }
+        if(maxIntCount.size() == 1 && maxIntCount.get(0) == 0) {
+            maxIntCount.remove(0);
         }
     }
 
@@ -104,7 +109,7 @@ public class ArbInt {
             this.negative = true;
         } else if(other.negative) {
             other.negative = false;
-            newInt =  this.subtract(other);
+            newInt = this.subtract(other);
             other.negative = true;
         } else if(negative) {
             negative = false;
@@ -131,11 +136,17 @@ public class ArbInt {
             } catch (NumberFormatException e) {
                 String lastCell = combineString(
                     String.valueOf(maxIntCount.get(maxIntCount.size()-1)),
-                    String.valueOf(other.maxIntCount.get(other.maxIntCount.size()-1)));
+                    String.valueOf(other.maxIntCount.get
+                                   (other.maxIntCount.size()-1)));
                 lastCell = getRem(lastCell, 0);
                 newInt.maxIntCount.add(2147483647);
                 newInt.maxIntCount.add(new Integer(lastCell));
             }
+        } else if(maxIntCount.size() > 0) {
+            newInt.maxIntCount.add(maxIntCount.get(maxIntCount.size() - 1));
+        } else if(other.maxIntCount.size() > 0) {
+            newInt.maxIntCount.add(other.maxIntCount.get
+                                   (other.maxIntCount.size() - 1));
         }
         int newRem = other.remain + remain;
         if (newRem > 0) {
@@ -236,6 +247,29 @@ public class ArbInt {
         return newInt;
     }
 
+    public ArbInt multiply (ArbInt other) {
+        ArbInt result;
+        ArbInt halveOther;
+        ArbInt zero = new ArbInt("0");
+        if(other.compare(zero, 0) || this.compare(zero, 0)) {
+            return zero;
+        }
+        if (!other.compare(new ArbInt("1"), 0)) {
+            halveOther = other.halve();
+            if(other.remain % 2 != 0) {
+                result = this.multiply(halveOther);
+                result = result.add(result);
+                result = result.add(this);
+            } else {
+                result = this.multiply(halveOther);
+                result = result.add(result);
+            }
+        } else {
+            result = this;
+        }
+        return result;
+    }
+
     private String combineString(String first, String second) {
         String result = "";
         int carry = 0;
@@ -323,10 +357,6 @@ public class ArbInt {
                     newInt.maxIntCount, lastCell/2);
         }
         newInt.remain = remain/2;
-        for(int i: newInt.maxIntCount) {
-            System.out.println("mic " + i);
-        }
-        System.out.println("rem " + newInt.remain);
         return newInt;
     }
     
@@ -438,7 +468,8 @@ public class ArbInt {
     public String toString() {
         ArrayList<String> multiValues = new ArrayList<>();
         String maxIntCountSize = String.valueOf(maxIntCount.size()-1);
-        maxIntCountSize = maxIntCountSize.charAt(0) == '-' ? "0" : maxIntCountSize;
+        maxIntCountSize = maxIntCountSize.charAt(0) == '-' ? "0" :
+            maxIntCountSize;
         String cellValue = "4611686014132420609";
         String result = "0";
         if(!maxIntCountSize.equals("0")) {
@@ -493,6 +524,9 @@ public class ArbInt {
         }
         if(negative) {
             result = "-" + result;
+        }
+        if(result.equals("")) {
+            result = "0";
         }
         return result;
     }

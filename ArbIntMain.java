@@ -37,7 +37,7 @@ public class ArbIntMain {
                     System.out.println("# " + firstToken.subtract(thirdToken));
                     break;
                 case "*":
-                    System.out.println("Not yet supported");
+                    System.out.println("# " + firstToken.multiply(thirdToken));
                     break;
                 case "/":
                     System.out.println("Not yet supported");            
@@ -67,21 +67,26 @@ public class ArbIntMain {
         /*
         ArbInt ai = new ArbInt("12345678901234567890123");
         ArbInt ai2 = new ArbInt("765432109877");
-        ArbInt ai3 = new ArbInt("1234567890123");
-        ArbInt ai4 = ai.add(ai2);
-        ArbInt ai5 = ai.subtract(ai3);
+        ArbInt ai3 = new ArbInt("4641975304");
+        ArbInt ai4 = ai3.add(ai3);
+        ArbInt ai5 = ai4.add(new ArbInt("12345679"));
         ArbInt ai6 = new ArbInt("-12345678");
         ArbInt ai7 = new ArbInt("12345679");
-        ArbInt ai8 = new ArbInt("100000000000002");
+        ArbInt ai8 = new ArbInt("0");
+        ArbInt ai9 = new ArbInt("5");
+        ArbInt ai10 = new ArbInt("9");
         
         System.out.println(ai);
         System.out.println(ai2);
         System.out.println(ai3);
         System.out.println(ai4);
+        System.out.println(ai4.remain);
         System.out.println(ai5);
         System.out.println(ai.subtract(ai4));
         System.out.println(ai6.subtract(ai7));
-        System.out.println(ai8.halve());
-        */
+        System.out.println(ai7.remain);
+        System.out.println(ai7.maxIntCount.isEmpty());
+        System.out.println(ai8.compare(ai8, 0));
+        System.out.println(ai7.multiply(ai7));*/
     }
 }
