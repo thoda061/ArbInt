@@ -333,65 +333,102 @@ public class ArbInt {
     public boolean compare (ArbInt other, int type) {
         switch (type) {
             case 0:
-            if(maxIntCount.size() != other.maxIntCount.size()) {
-                return false;
-            } else {
-                if(!maxIntCount.isEmpty()) {
-                    if(maxIntCount.get(maxIntCount.size()-1) !=
-                            other.maxIntCount.get(other.maxIntCount.size()-1)) {
+                if(other.negative != negative) {
+                    return false;
+                }
+                if(maxIntCount.size() != other.maxIntCount.size()) {
+                    return false;
+                } else {
+                    if(!maxIntCount.isEmpty()) {
+                        if(maxIntCount.get(maxIntCount.size()-1) !=
+                           other.maxIntCount.get
+                           (other.maxIntCount.size()-1)){
+                            return false;
+                        }
+                    }
+                    if(remain == other.remain) {
+                        return true;
+                    } else {
                         return false;
                     }
                 }
-                if(remain == other.remain) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
             
             case 1:
-            if(maxIntCount.size() < other.maxIntCount.size()) {
-                return true;
-            } else if (maxIntCount.size() > other.maxIntCount.size()) {
-                return false;
-            } else {
-                if(!maxIntCount.isEmpty()) {
-                    if(maxIntCount.get(maxIntCount.size()-1) <
-                            other.maxIntCount.get(other.maxIntCount.size()-1)) {
+                if(negative && !other.negative) {
+                    return true;
+                }
+                if(!negative && other.negative) {
+                    return false;
+                }
+                
+                if(negative && other.negative) {
+                    this.negative = false;
+                    other.negative = false;
+                    boolean result =  compare(other, 2);
+                    this.negative = true;
+                    this.negative = true;
+                    return result;
+                }
+                if(maxIntCount.size() < other.maxIntCount.size()) {
+                    return true;
+                } else if (maxIntCount.size() > other.maxIntCount.size()) {
+                    return false;
+                } else {
+                    if(!maxIntCount.isEmpty()) {
+                        if(maxIntCount.get(maxIntCount.size()-1) <
+                           other.maxIntCount.get
+                           (other.maxIntCount.size()-1)) {
+                            return true;
+                        } else if(maxIntCount.get(maxIntCount.size()-1) >
+                                  other.maxIntCount.get
+                                  (other.maxIntCount.size()-1)) {
+                            return false;
+                        }
+                    }
+                    if(remain < other.remain) {
                         return true;
-                    } else if(maxIntCount.get(maxIntCount.size()-1) >
-                            other.maxIntCount.get(other.maxIntCount.size()-1)) {
+                    } else {
                         return false;
                     }
                 }
-                if(remain < other.remain) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
             
             case 2:
-            if(maxIntCount.size() > other.maxIntCount.size()) {
-                return true;
-            } else if (maxIntCount.size() < other.maxIntCount.size()) {
-                return false;
-            } else {
-                if(!maxIntCount.isEmpty()) {
-                    if(maxIntCount.get(maxIntCount.size()-1) >
-                            other.maxIntCount.get(other.maxIntCount.size()-1)) {
+                if(!negative && other.negative) {
+                    return true;
+                }
+                if(negative && !other.negative) {
+                    return false;
+                }
+                if(negative && other.negative) {
+                    this.negative = false;
+                    other.negative = false;
+                    boolean result =  compare(other, 1);
+                    this.negative = true;
+                    this.negative = true;
+                    return result;
+                }
+                if(maxIntCount.size() > other.maxIntCount.size()) {
+                    return true;
+                } else if (maxIntCount.size() < other.maxIntCount.size()) {
+                    return false;
+                } else {
+                    if(!maxIntCount.isEmpty()) {
+                        if(maxIntCount.get(maxIntCount.size()-1) >
+                           other.maxIntCount.get
+                           (other.maxIntCount.size()-1)) {
+                            return true;
+                        } else if(maxIntCount.get(maxIntCount.size()-1) <
+                                  other.maxIntCount.get
+                                  (other.maxIntCount.size()-1)) {
+                            return false;
+                        }
+                    }
+                    if(remain > other.remain) {
                         return true;
-                    } else if(maxIntCount.get(maxIntCount.size()-1) <
-                            other.maxIntCount.get(other.maxIntCount.size()-1)) {
+                    } else {
                         return false;
                     }
                 }
-                if(remain > other.remain) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
             
             default: return false;
         }
