@@ -64,8 +64,8 @@ public class ArbIntMain {
 
         sc.close();
 
-        /*
-        ArbInt ai = new ArbInt("12345678901234567890123");
+        
+        /* ArbInt ai = new ArbInt("12345678901234567890123");
         ArbInt ai2 = new ArbInt("765432109877");
         ArbInt ai3 = new ArbInt("4641975304");
         ArbInt ai4 = ai3.add(ai3);
@@ -73,8 +73,10 @@ public class ArbIntMain {
         ArbInt ai6 = new ArbInt("-12345678");
         ArbInt ai7 = new ArbInt("12345679");
         ArbInt ai8 = new ArbInt("0");
-        ArbInt ai9 = new ArbInt("5");
-        ArbInt ai10 = new ArbInt("9");
+        ArbInt ai9 = new ArbInt("1000000000000");
+        ArbInt ai10 = new ArbInt("100000000");
+        ArbInt ai11 = new ArbInt("180800000000");
+        ArbInt ai12 = new ArbInt("102400000000");
         
         System.out.println(ai);
         System.out.println(ai2);
@@ -82,11 +84,14 @@ public class ArbIntMain {
         System.out.println(ai4);
         System.out.println(ai4.remain);
         System.out.println(ai5);
-        System.out.println(ai.subtract(ai4));
+        System.out.println(ai11.subtract(ai12));
         System.out.println(ai6.subtract(ai7));
         System.out.println(ai7.remain);
         System.out.println(ai7.maxIntCount.isEmpty());
         System.out.println(ai8.compare(ai8, 0));
-        System.out.println(ai7.multiply(ai7));*/
+        System.out.println(ai7.multiply(ai7));
+        System.out.println(ai2.divide(ai3));
+        System.out.println(ai2.divide(ai2));
+        System.out.println(ai3.divide(ai2));*/
     }
 }

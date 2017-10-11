@@ -223,7 +223,7 @@ public class ArbInt {
         }
         int rem = remain - other.remain;
         if(rem < 0) {
-            if(!newInt.maxIntCount.isEmpty()) {
+            if(newInt.maxIntCount.isEmpty()) {
                 newInt.remain = Math.abs(rem);
                 newInt.negative = true;
             } else {
@@ -266,6 +266,37 @@ public class ArbInt {
             }
         } else {
             result = this;
+        }
+        return result;
+    }
+
+    public ArbInt divide (ArbInt other) {
+        ArbInt result = new ArbInt("0");
+        ArbInt doubleOther = new ArbInt(other.toString());
+        ArbInt prv = new ArbInt("0");
+        ArbInt zero = new ArbInt("0");
+        ArbInt one = new ArbInt("1");
+        while (doubleOther.compare(this, 1)) {
+            if(result.compare(zero, 0)) {
+                result = result.add(one);
+            } else {
+                result = result.add(result);
+            }
+            prv = new ArbInt(doubleOther.toString());
+            doubleOther = doubleOther.add(doubleOther);
+        }
+        if(doubleOther.compare(this, 0)) {
+            if(result.compare(zero, 0)) {;
+                result = result.add(one);
+            } else {
+                result = result.add(result);
+            }
+            return result;
+        } else {
+            if(result.compare(zero, 0)) {
+                return result;
+            }
+            result = result.add((this.subtract(prv)).divide(other));
         }
         return result;
     }
@@ -370,9 +401,9 @@ public class ArbInt {
                     return false;
                 } else {
                     if(!maxIntCount.isEmpty()) {
-                        if(maxIntCount.get(maxIntCount.size()-1) !=
+                        if(!maxIntCount.get(maxIntCount.size()-1).equals(
                            other.maxIntCount.get
-                           (other.maxIntCount.size()-1)){
+                           (other.maxIntCount.size()-1))){
                             return false;
                         }
                     }
